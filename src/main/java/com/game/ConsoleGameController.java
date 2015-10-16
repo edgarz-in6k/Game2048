@@ -10,8 +10,8 @@ public class ConsoleGameController {
 
     public ConsoleGameController(int size) {
         this.size = size;
-        field = new GameField(size);
-        printer = new GameFieldPrinter(field);
+        field = new GameField(new StaticCellValueGenerator(), size);
+        printer = new GameFieldPrinter();
     }
 
     public void run(){
@@ -20,14 +20,14 @@ public class ConsoleGameController {
         while (isRun){
             if (sc.hasNext()){
                 switch (sc.next()){
-                    case "w": field.up(); break;
-                    case "a": field.left(); break;
-                    case "s": field.down(); break;
-                    case "d": field.right(); break;
+                    case "w": field.move(Direction.UP); break;
+                    case "a": field.move(Direction.LEFT); break;
+                    case "s": field.move(Direction.DOWN); break;
+                    case "d": field.move(Direction.RIGHT); break;
                     case "e": isRun = false; break;
                 }
             }
-            printer.printToStream(System.out);
+            //printer.printToStream(System.out, field);
         }
     }
 }
