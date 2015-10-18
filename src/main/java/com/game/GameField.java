@@ -1,14 +1,12 @@
 package com.game;
 
 import com.filler.CellValueFiller;
-import com.generator.CellValueGenerator;
 
 import java.util.*;
 
 public class GameField {
 
     private CellValueFiller filler;
-    private CellValueGenerator generator;
     private List<ArrayList<GameCell>> cells;
     private int size;
     private int score;
@@ -18,28 +16,20 @@ public class GameField {
         this.size = size;
         score = 0;
         createCells(size);
-        filler.setCells(cells);
         filler.setSize(size);
     }
 
     public void fillEntryCell() {
-        /*Random random = new Random();
-        int randomRow = random.nextInt(size);
-        int randomColl = random.nextInt(size);
-        while (cells.get(randomRow).get(randomColl).getValue() != 0) {
-            randomRow = random.nextInt(size);
-            randomColl = random.nextInt(size);
-        }
-        setCell(randomRow, randomColl, twoOrFour());*/
-        /*for (int i = 0; i < size; i++) {
+        List<GameCell> emptyCell = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (getValue(i, j) == 0){
-                    setValue(i, j, 2);
-                    return;
+                    emptyCell.add(getCell(i, j));
                 }
             }
-        }*/
-        filler.fillEntryCell();
+        }
+        if (!emptyCell.isEmpty())
+            filler.fillEntryCell(emptyCell);
     }
 
     private GameCell twoOrFour() {
@@ -78,53 +68,162 @@ public class GameField {
         }
     }
 
-    private void up() {
-        System.out.println("up");
+    private static final long VALUE_NULL = 0;
 
+    private void up() {
+        Queue<Long> line = new ArrayDeque<>();
+        for (int j = 0; j < size; j++) {
+            for (int i = 0; i <size; i++) {
+                //element in row != 0
+                if (getValue(i, j) != 0)
+                    line.add(getValue(i, j));
+                //set 0 in row
+                setValue(i, j, VALUE_NULL);
+            }
+
+            //set queue with begin
+            for (int i = 0; i < size && !line.isEmpty(); i++) {
+                setValue(i, j, line.poll());
+            }
+
+            //plus element
+            for (int i = 0; i < size - 1; i++) {
+                if (getValue(i, j) == getValue(i + 1, j)) {
+                    setValue(i, j, getValue(i + 1, j) * 2);
+                    for (int k = i + 1; k < size - 1; k++) {
+                        setValue(k, j, getValue(k + 1, j));
+                    }
+                    setValue(size - 1, j, VALUE_NULL);
+                }
+            }
+
+            //plus 1 and 2 element in row
+            if (getValue(0, j) == getValue(0 + 1, j)) {
+                setValue(0, j, getValue(0 + 1, j) * 2);
+                for (int k = 0 + 1; k < size - 1; k++) {
+                    setValue(k, j, getValue(k + 1, j));
+                }
+                setValue(size - 1, j, VALUE_NULL);
+            }
+        }
+
+        //printer.printToStream(System.out, this);
     }
 
     private void left() {
-        System.out.println("left");
+        Queue<Long> line = new ArrayDeque<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j <size; j++) {
+                //element in row != 0
+                if (getValue(i, j) != 0)
+                    line.add(getValue(i, j));
+                //set 0 in row
+                setValue(i, j, VALUE_NULL);
+            }
+
+            //set queue with begin
+            for (int j = 0; j < size && !line.isEmpty(); j++) {
+                setValue(i, j, line.poll());
+            }
+
+            //plus element
+            for (int j = 0; j < size - 1; j++) {
+                if (getValue(i, j) == getValue(i, j + 1)) {
+                    setValue(i, j, getValue(i, j + 1) * 2);
+                    for (int k = j + 1; k < size - 1; k++) {
+                        setValue(i, k, getValue(i, k + 1));
+                    }
+                    setValue(i, size - 1, VALUE_NULL);
+                }
+            }
+
+            //plus 1 and 2 element in row
+            if (getValue(i, 0) == getValue(i, 0 + 1)) {
+                setValue(i, 0, getValue(i, 0 + 1) * 2);
+                for (int k = 0 + 1; k < size - 1; k++) {
+                    setValue(i, k, getValue(i, k + 1));
+                }
+                setValue(i, size - 1, VALUE_NULL);
+            }
+        }
+
+        //printer.printToStream(System.out, this);
     }
 
     private void right() {
-        System.out.println("right");
+        Queue<Long> line = new ArrayDeque<>();
+        for (int i = 0; i < size; i++) {
+            for (int j = size - 1; j >= 0; j--) {
+                //element in row != 0
+                if (getValue(i, j) != 0)
+                    line.add(getValue(i, j));
+                //set 0 in row
+                setValue(i, j, VALUE_NULL);
+            }
+
+            //set queue with begin
+            for (int j = size - 1; j >= 0 && !line.isEmpty(); j--) {
+                setValue(i, j, line.poll());
+            }
+
+            //plus element
+            for (int j = size - 1; j >= 1; j--) {
+                if (getValue(i, j) == getValue(i, j - 1)) {
+                    setValue(i, j, getValue(i, j - 1) * 2);
+                    for (int k = j - 1; k >= 1; k--) {
+                        setValue(i, k, getValue(i, k - 1));
+                    }
+                    setValue(i, 0, VALUE_NULL);
+                }
+            }
+
+            //plus 1 and 2 element in row
+            if (getValue(i, size - 1) == getValue(i, size - 1 - 1)) {
+                setValue(i, size - 1, getValue(i, size - 1 - 1) * 2);
+                for (int k = size - 1 - 1; k >= 1; k--) {
+                    setValue(i, k, getValue(i, k - 1));
+                }
+                setValue(i, 0, VALUE_NULL);
+            }
+        }
+
+        //printer.printToStream(System.out, this);
     }
 
     private void down() {
-        //System.out.println("down");
-        //List<Integer> line = new ArrayList<>();
         Queue<Long> line = new ArrayDeque<>();
         for (int j = 0; j < size; j++) {
             for (int i = size - 1; i >= 0; i--) {
+                //element in row != 0
                 if (getValue(i, j) != 0)
                     line.add(getValue(i, j));
+                //set 0 in row
+                setValue(i, j, VALUE_NULL);
             }
 
-            for (int i = size - 1; i >= 0; i--) {
-                setValue(i, j, 0);
-            }
-
+            //set queue with begin
             for (int i = size - 1; i >= 0 && !line.isEmpty(); i--) {
                 setValue(i, j, line.poll());
             }
 
+            //plus element
             for (int i = size - 1; i >= 1; i--) {
                 if (getValue(i, j) == getValue(i - 1, j)) {
                     setValue(i, j, getValue(i - 1, j) * 2);
-                    for (int k = i-1; k >= 1; k--) {
+                    for (int k = i - 1; k >= 1; k--) {
                         setValue(k, j, getValue(k - 1, j));
                     }
-                    setValue(size - 4, j, 0);
+                    setValue(0, j, VALUE_NULL);
                 }
             }
 
-            if (getValue(size - 1, j) == getValue(size - 2, j)) {
-                setValue(size - 1, j, getValue(size - 2, j) * 2);
-                for (int k = size - 2; k >= 1; k--) {
+            //plus 1 and 2 element in row
+            if (getValue(size - 1, j) == getValue(size - 1 - 1, j)) {
+                setValue(size - 1, j, getValue(size - 1 - 1, j) * 2);
+                for (int k = size - 1 - 1; k >= 1; k--) {
                         setValue(k, j, getValue(k - 1, j));
                 }
-                setValue(size - 4, j, 0);
+                setValue(0, j, VALUE_NULL);
             }
         }
 
@@ -160,10 +259,14 @@ public class GameField {
         String result = "";
         for (int row = 0; row < size; row++) {
             for (int coll = 0; coll < size; coll++) {
-                result += String.format("%5s", getValue(row, coll));//getValue(row, coll) + " ";
+                result += String.format("%6s", getValue(row, coll));//getValue(row, coll) + " ";
             }
             result += "\n";
         }
         return result;
+    }
+
+    public int size() {
+        return size;
     }
 }
