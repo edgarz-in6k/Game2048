@@ -6,18 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaticProgressiveCellValueGenerator implements CellValueGenerator{
-    @Override
-    public void getNumber() {
 
+    private long startValue;
+    private static long value;
+
+    public StaticProgressiveCellValueGenerator() {
+        startValue = 2;
+        value = startValue;
+    }
+
+    public StaticProgressiveCellValueGenerator(long start){
+        startValue = start;
+        value = startValue;
+    }
+
+    public void refresh(){
+        value = startValue;
     }
 
     @Override
-    public void setCells(List<ArrayList<GameCell>> cells) {
-
-    }
-
-    @Override
-    public void setSize(int size) {
-
+    public long getNumber() {
+        value *= 2;
+        return value/2;
     }
 }

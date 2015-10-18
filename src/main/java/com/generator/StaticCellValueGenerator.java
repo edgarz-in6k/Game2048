@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StaticCellValueGenerator implements CellValueGenerator{
-    @Override
-    public void getNumber() {
 
+    private long value;
+
+    public StaticCellValueGenerator() {
+        value = 2;
+    }
+
+    public StaticCellValueGenerator(long value) {
+        this.value = value;
     }
 
     @Override
-    public void setCells(List<ArrayList<GameCell>> cells) {
-
-    }
-
-    @Override
-    public void setSize(int size) {
-
+    public long getNumber() {
+        return value;
     }
 }

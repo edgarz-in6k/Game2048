@@ -7,8 +7,10 @@ public class GameFieldPrinter {
         String result = "";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                result += String.format("%5s", field.getValue(i, j));//field.getValue(i, j) + " ";
+                result += String.format("%s", LayoutCell.valueToColor(field.getValue(i, j)));
+                result += String.format("%6s", field.getValue(i, j));
             }
+            result += String.format("%s", LayoutCell.RESET.color);
             result += "\n";
         }
         return result;

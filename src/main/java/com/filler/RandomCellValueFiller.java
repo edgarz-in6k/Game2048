@@ -3,34 +3,26 @@ package com.filler;
 import com.game.GameCell;
 import com.generator.CellValueGenerator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class RandomCellValueFiller implements CellValueFiller {
 
-    private List<ArrayList<GameCell>> cells;
+    private CellValueGenerator generator;
     private int size;
 
+    public RandomCellValueFiller(CellValueGenerator generator) {
+        this.generator = generator;
+    }
+
     @Override
-    public void fillEntryCell() {
+    public void fillEntryCell(List<GameCell> emptyCell) {
         Random random = new Random();
-        int randomRow = random.nextInt(size);
-        int randomColl = random.nextInt(size);
-        while (cells.get(randomRow).get(randomColl).getValue() != 0) {
-            randomRow = random.nextInt(size);
-            randomColl = random.nextInt(size);
+        int randomIndex = random.nextInt(emptyCell.size());
+        while (emptyCell.get(randomIndex).getValue() != 0) {
+            randomIndex = random.nextInt(emptyCell.size());
         }
-        cells.get(randomRow).set(randomColl, new GameCell(twoOrFour()));
-    }
-
-    private long twoOrFour() {
-        return (new Random().nextInt(2)*2+2);
-    }
-
-    @Override
-    public void setCells(List<ArrayList<GameCell>> cells) {
-        this.cells = cells;
+        emptyCell.get(randomIndex).setValue(generator.getNumber());
     }
 
     @Override
