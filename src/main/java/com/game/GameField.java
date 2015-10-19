@@ -3,11 +3,14 @@ package com.game;
 import com.filler.CellValueFiller;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameField {
 
+    private static final String NEW_LINE = "\n";
+    private static final long VALUE_NULL = 0;
+
     private CellValueFiller filler;
-    //private List<ArrayList<GameCell>> cells;
     private List<GameCell> cells;
     private int size;
     private int score;
@@ -15,80 +18,69 @@ public class GameField {
     public GameField(CellValueFiller filler, int size) {
         this.filler = filler;
         this.size = size;
-        score = 0;
+        this.score = 0;
         createCells(size);
         filler.setSize(size);
     }
 
-    public void fillEntryCell() {
-        List<GameCell> emptyCell = new ArrayList<>();
-        for (int row = 0; row < size; row++) {
-            for (int coll = 0; coll < size; coll++) {
-                if (getValue(row, coll) == 0) {
-                    emptyCell.add(getCell(row, coll));
-                }
-            }
-        }
-        if (!emptyCell.isEmpty())
-            filler.fillEntryCell(emptyCell);
+    public void fillEmptyCell() {
+        filler.fill(
+                cells.stream().filter(GameCell::isEmpty).collect(Collectors.toList())
+        );
     }
 
     private void createCells(int size) {
-        /*cells = new ArrayList<>();
-        for (int row = 0; row < size; row++) {
-            cells.add(new ArrayList<>());
-            for (int coll = 0; coll < size; coll++) {
-                cells.get(row).add(new GameCell());
-            }
-        }*/
         cells = new ArrayList<>();
-        for (int row = 0; row < size * size; row++)
+        for (int i = 0; i < size * size; i++)
             cells.add(new GameCell());
     }
 
     public boolean move(Direction direction) {
         switch (direction) {
-            case UP: return up();
-            case LEFT: return left();
-            case RIGHT: return right();
-            case DOWN: return down();
-            default: return false;
+            case UP:
+                return up();
+            case LEFT:
+                return left();
+            case RIGHT:
+                return right();
+            case DOWN:
+                return down();
+            default:
+                throw new UnsupportedOperationException();
         }
     }
 
-    private static final long VALUE_NULL = 0;
-
-    private void upsideDown() {
+    private void upsideDownField() {
         for (int row = 0; row < size / 2; row++) {
-            for (int coll = 0; coll < size; coll++) {
-                long valueTemp = getValue(row, coll);
-                setValue(row, coll, getValue(size - 1 - row, coll));
-                setValue(size - 1 - row, coll, valueTemp);
+            for (int col = 0; col < size; col++) {
+                long valueTemp = getCell(row, col).getValue();
+                getCell(row, col).setValue(getCell(size - 1 - row, col).getValue());
+                getCell(size - 1 - row, col).setValue(valueTemp);
             }
         }
     }
 
-    private void clockwise() {
+    private void clockwiseRotateField() {
         List<GameCell> cellsTemp = new ArrayList<>();//size * size
         for (int row = 0; row < size * size; row++) {
             cellsTemp.add(null);
         }
-        for (int coll = 0; coll < size; coll++) {
+        for (int col = 0; col < size; col++) {
             for (int row = 0; row < size; row++) {
-                cellsTemp.set(coll * size + (size - 1 - row), getCell(row, coll));
+                cellsTemp.set(col * size + (size - 1 - row), getCell(row, col));
             }
         }
         cells = cellsTemp;
     }
 
-    private void anticlockwise() {
+    private void anticlockwiseRotateField() {
         List<GameCell> cellsTemp = new ArrayList<>();//size * size
         for (int row = 0; row < size * size; row++) {
             cellsTemp.add(null);
         }
         for (int row = 0; row < size; row++) {
-            for (int coll = 0; coll < size; coll++) {
-                cellsTemp.set((size - 1 - coll) * size + row, getCell(row, coll));
+            for (int col = 0; col < size; col++) {
+                cellsTemp.set((size - 1 - col) * size + row, getCell(row, col));
             }
         }
         cells = cellsTemp;
@@ -98,106 +90,122 @@ public class GameField {
     private boolean up() {
         moved = false;
         Queue<Long> line = new ArrayDeque<>();
-        for (int coll = 0; coll < size; coll++) {
+        for (int col = 0; col < size; col++) {
 
-            addCellFillInQueue(line, coll);
+            addCellFillInQueue(line, col);
 
-            setNullRow(coll);
+            cleanColumn(col);
 
-            pollQueueInRow(line, coll);
+            pollQueueInColumn(line, col);
 
-            plusCell(coll);
+            plusCell(col);
         }
         return moved;
     }
 
-    private void addCellFillInQueue(Queue<Long> line, int coll) {
+    private void addCellFillInQueue(Queue<Long> line, int col) {
         for (int row = 0; row < size; row++) {
-            if (getValue(row, coll) != 0)
-                line.add(getValue(row, coll));
+            GameCell cell = getCell(row, col);
+            if (!cell.isEmpty())
+                line.add(cell.getValue());
         }
+        int countLastNUll = 0;
+        for (int row = size - 1; row >= 0; row--) {
+            if (getCell(row, col).isEmpty())
+                countLastNUll++;
+            else
+                break;
+        }
+        //System.out.println(line.size() + " " + size + " " + countLastNUll);
+        if (!(line.size() == size + countLastNUll))
+            moved = true;
     }
 
-    private void setNullRow(int coll) {
+    private void cleanColumn(int col) {
         for (int row = 0; row < size; row++)
-            setValue(row, coll, VALUE_NULL);
+            getCell(row, col).setValue(VALUE_NULL);
     }
 
-    private void pollQueueInRow(Queue<Long> line, int coll) {
+    private void pollQueueInColumn(Queue<Long> line, int col) {
         for (int row = 0; row < size && !line.isEmpty(); row++) {
-            setValue(row, coll, line.poll());
+            getCell(row, col).setValue(line.poll());
         }
     }
 
-    private void plusCell(int coll) {
+    private void plusCell(int col) {
         for (int row = 0; row < size - 1; row++) {
-            adding(row, coll);
+            adding(row, col);
         }
     }
 
-    private void adding(int row, int coll) {
-        if (getValue(row, coll) == getValue(row + 1, coll)) {
-            setValue(row, coll, getValue(row + 1, coll) * 2);
+    private void adding(int row, int col) {
+        GameCell cell = getCell(row, col);
+        GameCell cell1 = getCell(row + 1, col);
+        if (cell.getValue() == cell1.getValue()) {
+            cell.setValue(cell1.getValue() * 2);
             for (int k = row + 1; k < size - 1; k++) {
-                setValue(k, coll, getValue(k + 1, coll));
+                getCell(k, col).setValue(getCell(k + 1, col).getValue());
             }
-            setValue(size - 1, coll, VALUE_NULL);
-            score += getValue(row, coll);
+            getCell(size - 1, col).setValue(VALUE_NULL);
+            score += cell.getValue();
             moved = true;
         }
     }
 
     private boolean left() {
-        clockwise();
+        clockwiseRotateField();
         boolean result = up();
-        anticlockwise();
+        anticlockwiseRotateField();
         return result;
     }
 
     private boolean right() {
-        anticlockwise();
+        anticlockwiseRotateField();
         boolean result = up();
-        clockwise();
+        clockwiseRotateField();
         return result;
     }
 
     private boolean down() {
-        upsideDown();
+        upsideDownField();
         boolean result = up();
-        upsideDown();
+        upsideDownField();
         return result;
     }
 
-    private GameCell getCell(int row, int coll) {
-        //return cells.get(row).get(coll);
-        return cells.get(row * size + coll);
-    }
-
-    public long getValue(int row, int coll) {
-        return getCell(row, coll).getValue();
-    }
-
-    private void setValue(int row, int coll, long value) {
-        //cells.get(row).set(coll, new GameCell(value));
-        cells.get(row * size + coll).setValue(value);
+    private GameCell getCell(int row, int col) {
+        return cells.get(row * size + col);
     }
 
     public boolean hasAvailableMoves() {
+        if (hasNullCell())
+            return true;
+        if (hasNeighborSame())
+            return true;
+        return false;
+    }
+
+    private boolean hasNeighborSame() {
         for (int row = 0; row < size; row++) {
-            for (int coll = 0; coll < size; coll++) {
-                if (isNeighborNotNull(row, coll))
+            for (int col = 0; col < size; col++) {
+                GameCell cell = getCell(row, col);
+                if (row - 1 >=0 && getCell(row - 1, col).getValue() == cell.getValue())
+                    return true;
+                if (col - 1 >= 0 && getCell(row, col - 1).getValue() == cell.getValue())
+                    return true;
+                if (col + 1 < size && getCell(row, col + 1).getValue() == cell.getValue())
+                    return true;
+                if (row + 1 < size && getCell(row + 1, col).getValue() == cell.getValue())
                     return true;
             }
         }
         return false;
     }
 
-    private boolean isNeighborNotNull(int i, int j) {
-        for (int row = i - 1; row < i + 1; row++) {
-            for (int coll = j - 1; coll < j + 1; coll++) {
-                if (row == i || coll == j || (row < 0 || row >= size || coll < 0 || coll >= size))
-                    continue;
-                if (getValue(i, j) == getValue(row, coll))
+    private boolean hasNullCell() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (getCell(row, col).getValue() == LayoutCell.NULL.value)
                     return true;
             }
         }
@@ -216,10 +224,10 @@ public class GameField {
     public String toString() {
         String result = "";
         for (int row = 0; row < size; row++) {
-            for (int coll = 0; coll < size; coll++) {
-                result += String.format("%6s", getValue(row, coll));//getValue(row, coll) + " ";
+            for (int col = 0; col < size; col++) {
+                result += String.format("%6s", getCell(row, col).getValue());
             }
-            result += "\n";
+            result += NEW_LINE;
         }
         return result;
     }

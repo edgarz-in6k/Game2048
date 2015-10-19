@@ -19,4 +19,8 @@ public class GameCell {
     public void setValue(long value) {
         this.value = value;
     }
+
+    public boolean isEmpty() {
+        return value == 0;
+    }
 }

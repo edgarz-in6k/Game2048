@@ -6,17 +6,19 @@ import com.game.GameField;
 import com.generator.RandomCellValueGenerator;
 
 public class App {
+
+    public static final int FIELD_SIZE = 4;
+
     public static void main( String[] args ) {
-        int sizeField = 4;
-        GameField gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), sizeField);
-        gameField.fillEntryCell();
-        gameField.fillEntryCell();
+        GameField gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), FIELD_SIZE);
+        gameField.fillEmptyCell();
+        gameField.fillEmptyCell();
         ConsoleGameController controller = new ConsoleGameController(gameField);
         controller.run();
     }
-}
 
-/*int k = 0;
+    void printColors(){
+        int k = 0;
         for (int i = 0; i<=108; i++){
             if (i == 3)
                 i = 30;
@@ -26,4 +28,7 @@ public class App {
             k++;
             if (k%10 == 0 && k != 0)
                 System.out.println();
-        }*/
+        }
+    }
+}
+//s a s d w s a d s w a d s a d w

@@ -16,7 +16,7 @@ public class RandomCellValueFiller implements CellValueFiller {
     }
 
     @Override
-    public void fillEntryCell(List<GameCell> emptyCell) {
+    public void fill(List<GameCell> emptyCell) {
         Random random = new Random();
         int randomIndex = random.nextInt(emptyCell.size());
         while (emptyCell.get(randomIndex).getValue() != 0) {

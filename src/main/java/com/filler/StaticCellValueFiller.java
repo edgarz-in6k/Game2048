@@ -15,9 +15,9 @@ public class StaticCellValueFiller implements CellValueFiller {
     }
 
     @Override
-    public void fillEntryCell(List<GameCell> emptyCell) {
+    public void fill(List<GameCell> emptyCell) {
         for (int i = 0; i < size; i++) {
-            if (emptyCell.get(i).getValue() == 0){//getValue(i, j)
+            if (emptyCell.get(i).getValue() == 0){
                 emptyCell.get(i).setValue(generator.getNumber());
                 return;
             }

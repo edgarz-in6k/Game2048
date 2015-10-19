@@ -7,6 +7,6 @@ public class RandomCellValueGenerator implements CellValueGenerator{
     }
 
     private long twoOrFour() {
-        return (Math.random()<0.9 ? 2 : 4);//new Random().nextInt(2)*2+2
+        return (Math.random()<0.9 ? 2 : 4);
     }
 }
