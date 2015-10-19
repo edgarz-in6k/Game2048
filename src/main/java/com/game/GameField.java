@@ -22,24 +22,15 @@ public class GameField {
 
     public void fillEntryCell() {
         List<GameCell> emptyCell = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (getValue(i, j) == 0) {
-                    emptyCell.add(getCell(i, j));
+        for (int row = 0; row < size; row++) {
+            for (int coll = 0; coll < size; coll++) {
+                if (getValue(row, coll) == 0) {
+                    emptyCell.add(getCell(row, coll));
                 }
             }
         }
         if (!emptyCell.isEmpty())
             filler.fillEntryCell(emptyCell);
-    }
-
-    private GameCell twoOrFour() {
-        Random random = new Random();
-        int value = random.nextInt(100);
-        if (value < 90)
-            return new GameCell(2);
-        else
-            return new GameCell(4);
     }
 
     private void createCells(int size) {
@@ -51,7 +42,7 @@ public class GameField {
             }
         }*/
         cells = new ArrayList<>();
-        for (int i = 0; i < size * size; i++)
+        for (int row = 0; row < size * size; row++)
             cells.add(new GameCell());
     }
 
@@ -61,216 +52,120 @@ public class GameField {
             case LEFT: return left();
             case RIGHT: return right();
             case DOWN: return down();
+            default: return false;
         }
-        return false;
     }
 
     private static final long VALUE_NULL = 0;
 
     private void upsideDown() {
-        for (int i = 0; i < size / 2; i++) {
-            for (int j = 0; j < size; j++) {
-                long valueTemp = getValue(i, j);
-                setValue(size - 1 - i, j, valueTemp);
-                System.out.println(valueTemp);
+        for (int row = 0; row < size / 2; row++) {
+            for (int coll = 0; coll < size; coll++) {
+                long valueTemp = getValue(row, coll);
+                setValue(row, coll, getValue(size - 1 - row, coll));
+                setValue(size - 1 - row, coll, valueTemp);
             }
         }
     }
 
-    private boolean up() {
-        boolean moved = false;
-        boolean direct;
-        Queue<Long> line = new ArrayDeque<>();
-        for (int j = 0; j < size; j++) {
-
-            direct = false;
-
-            for (int i = 0; i < size; i++) {
-                //element in row != 0
-                if (getValue(i, j) != 0)
-                    line.add(getValue(i, j));
-                //set 0 in row
-                setValue(i, j, VALUE_NULL);
-            }
-
-            //set queue with begin
-            for (int i = 0; i < size && !line.isEmpty(); i++) {
-                setValue(i, j, line.poll());
-            }
-
-            //plus element
-            for (int i = 0; i < size - 1; i++) {
-                if (getValue(i, j) == getValue(i + 1, j)) {
-                    setValue(i, j, getValue(i + 1, j) * 2);
-                    for (int k = i + 1; k < size - 1; k++) {
-                        setValue(k, j, getValue(k + 1, j));
-                    }
-                    setValue(size - 1, j, VALUE_NULL);
-                    score += getValue(i, j);
-                    direct = true;
-                    moved = true;
-                }
-            }
-
-            //plus 1 and 2 element in row
-            if (!direct && getValue(0, j) == getValue(0 + 1, j)) {
-                setValue(0, j, getValue(0 + 1, j) * 2);
-                for (int k = 0 + 1; k < size - 1; k++) {
-                    setValue(k, j, getValue(k + 1, j));
-                }
-                setValue(size - 1, j, VALUE_NULL);
-                score += getValue(0, j);
-                moved = true;
+    private void clockwise() {
+        List<GameCell> cellsTemp = new ArrayList<>();//size * size
+        for (int row = 0; row < size * size; row++) {
+            cellsTemp.add(null);
+        }
+        for (int coll = 0; coll < size; coll++) {
+            for (int row = 0; row < size; row++) {
+                cellsTemp.set(coll * size + (size - 1 - row), getCell(row, coll));
             }
         }
+        cells = cellsTemp;
+    }
+
+    private void anticlockwise() {
+        List<GameCell> cellsTemp = new ArrayList<>();//size * size
+        for (int row = 0; row < size * size; row++) {
+            cellsTemp.add(null);
+        }
+        for (int row = 0; row < size; row++) {
+            for (int coll = 0; coll < size; coll++) {
+                cellsTemp.set((size - 1 - coll) * size + row, getCell(row, coll));
+            }
+        }
+        cells = cellsTemp;
+    }
+
+    private boolean moved;
+    private boolean up() {
+        moved = false;
+        Queue<Long> line = new ArrayDeque<>();
+        for (int coll = 0; coll < size; coll++) {
+
+            addCellFillInQueue(line, coll);
+
+            setNullRow(coll);
+
+            pollQueueInRow(line, coll);
+
+            plusCell(coll);
+        }
         return moved;
+    }
+
+    private void addCellFillInQueue(Queue<Long> line, int coll) {
+        for (int row = 0; row < size; row++) {
+            if (getValue(row, coll) != 0)
+                line.add(getValue(row, coll));
+        }
+    }
+
+    private void setNullRow(int coll) {
+        for (int row = 0; row < size; row++)
+            setValue(row, coll, VALUE_NULL);
+    }
+
+    private void pollQueueInRow(Queue<Long> line, int coll) {
+        for (int row = 0; row < size && !line.isEmpty(); row++) {
+            setValue(row, coll, line.poll());
+        }
+    }
+
+    private void plusCell(int coll) {
+        for (int row = 0; row < size - 1; row++) {
+            adding(row, coll);
+        }
+    }
+
+    private void adding(int row, int coll) {
+        if (getValue(row, coll) == getValue(row + 1, coll)) {
+            setValue(row, coll, getValue(row + 1, coll) * 2);
+            for (int k = row + 1; k < size - 1; k++) {
+                setValue(k, coll, getValue(k + 1, coll));
+            }
+            setValue(size - 1, coll, VALUE_NULL);
+            score += getValue(row, coll);
+            moved = true;
+        }
     }
 
     private boolean left() {
-        boolean moved = false;
-        boolean direct;
-        Queue<Long> line = new ArrayDeque<>();
-        for (int i = 0; i < size; i++) {
-
-            direct = false;
-
-            for (int j = 0; j < size; j++) {
-                //element in row != 0
-                if (getValue(i, j) != 0)
-                    line.add(getValue(i, j));
-                //set 0 in row
-                setValue(i, j, VALUE_NULL);
-            }
-
-            //set queue with begin
-            for (int j = 0; j < size && !line.isEmpty(); j++) {
-                setValue(i, j, line.poll());
-            }
-
-            //plus element
-            for (int j = 0; j < size - 1; j++) {
-                if (getValue(i, j) == getValue(i, j + 1)) {
-                    setValue(i, j, getValue(i, j + 1) * 2);
-                    for (int k = j + 1; k < size - 1; k++) {
-                        setValue(i, k, getValue(i, k + 1));
-                    }
-                    setValue(i, size - 1, VALUE_NULL);
-                    score += getValue(i, j);
-                    direct = true;
-                    moved = true;
-                }
-            }
-
-            //plus 1 and 2 element in row
-            if (!direct && getValue(i, 0) == getValue(i, 0 + 1)) {
-                setValue(i, 0, getValue(i, 0 + 1) * 2);
-                for (int k = 0 + 1; k < size - 1; k++) {
-                    setValue(i, k, getValue(i, k + 1));
-                }
-                setValue(i, size - 1, VALUE_NULL);
-                score += getValue(i, 0);
-                moved = true;
-            }
-        }
-        return moved;
+        clockwise();
+        boolean result = up();
+        anticlockwise();
+        return result;
     }
 
     private boolean right() {
-        boolean moved = false;
-        boolean direct;
-        Queue<Long> line = new ArrayDeque<>();
-        for (int i = 0; i < size; i++) {
-
-            direct = false;
-
-            for (int j = size - 1; j >= 0; j--) {
-                //element in row != 0
-                if (getValue(i, j) != 0)
-                    line.add(getValue(i, j));
-                //set 0 in row
-                setValue(i, j, VALUE_NULL);
-            }
-
-            //set queue with begin
-            for (int j = size - 1; j >= 0 && !line.isEmpty(); j--) {
-                setValue(i, j, line.poll());
-            }
-
-            //plus element
-            for (int j = size - 1; j >= 1; j--) {
-                if (getValue(i, j) == getValue(i, j - 1)) {
-                    setValue(i, j, getValue(i, j - 1) * 2);
-                    for (int k = j - 1; k >= 1; k--) {
-                        setValue(i, k, getValue(i, k - 1));
-                    }
-                    setValue(i, 0, VALUE_NULL);
-                    score += getValue(i, j);
-                    direct = true;
-                    moved = true;
-                }
-            }
-
-            //plus 1 and 2 element in row
-            if (!direct && getValue(i, size - 1) == getValue(i, size - 1 - 1)) {
-                setValue(i, size - 1, getValue(i, size - 1 - 1) * 2);
-                for (int k = size - 1 - 1; k >= 1; k--) {
-                    setValue(i, k, getValue(i, k - 1));
-                }
-                setValue(i, 0, VALUE_NULL);
-                score += getValue(i, size - 1);
-                moved = true;
-            }
-        }
-        return moved;
+        anticlockwise();
+        boolean result = up();
+        clockwise();
+        return result;
     }
 
     private boolean down() {
-        boolean moved = false;
-        boolean direct;
-        Queue<Long> line = new ArrayDeque<>();
-        for (int j = 0; j < size; j++) {
-
-            direct = false;
-
-            for (int i = size - 1; i >= 0; i--) {
-                //element in row != 0
-                if (getValue(i, j) != 0)
-                    line.add(getValue(i, j));
-                //set 0 in row
-                setValue(i, j, VALUE_NULL);
-            }
-
-            //set queue with begin
-            for (int i = size - 1; i >= 0 && !line.isEmpty(); i--) {
-                setValue(i, j, line.poll());
-            }
-
-            //plus element
-            for (int i = size - 1; i >= 1; i--) {
-                if (getValue(i, j) == getValue(i - 1, j)) {
-                    setValue(i, j, getValue(i - 1, j) * 2);
-                    for (int k = i - 1; k >= 1; k--) {
-                        setValue(k, j, getValue(k - 1, j));
-                    }
-                    setValue(0, j, VALUE_NULL);
-                    score += getValue(i, j);
-                    direct = true;
-                    moved = true;
-                }
-            }
-
-            //plus 1 and 2 element in row
-            if (!direct && getValue(size - 1, j) == getValue(size - 1 - 1, j)) {
-                setValue(size - 1, j, getValue(size - 1 - 1, j) * 2);
-                for (int k = size - 1 - 1; k >= 1; k--) {
-                    setValue(k, j, getValue(k - 1, j));
-                }
-                setValue(0, j, VALUE_NULL);
-                score += getValue(size - 1, j);
-                moved = true;
-            }
-        }
-        return moved;
+        upsideDown();
+        boolean result = up();
+        upsideDown();
+        return result;
     }
 
     private GameCell getCell(int row, int coll) {
@@ -287,17 +182,17 @@ public class GameField {
         cells.get(row * size + coll).setValue(value);
     }
 
-    public boolean hasAvailableMoves() {//
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (hasNeighbor(i, j))
+    public boolean hasAvailableMoves() {
+        for (int row = 0; row < size; row++) {
+            for (int coll = 0; coll < size; coll++) {
+                if (isNeighborNotNull(row, coll))
                     return true;
             }
         }
         return false;
     }
 
-    private boolean hasNeighbor(int i, int j) {
+    private boolean isNeighborNotNull(int i, int j) {
         for (int row = i - 1; row < i + 1; row++) {
             for (int coll = j - 1; coll < j + 1; coll++) {
                 if (row == i || coll == j || (row < 0 || row >= size || coll < 0 || coll >= size))
@@ -309,7 +204,7 @@ public class GameField {
         return false;
     }
 
-    boolean hasCellWith2048() {//
+    boolean hasCellWith2048() {
         for (GameCell gameCell : cells) {
             if (gameCell.getValue() == LayoutCell.TWO_THOUSAND_AND_FORTY_EIGHT.value)
                 return true;

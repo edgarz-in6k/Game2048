@@ -4,6 +4,16 @@ import java.util.Scanner;
 
 public class ConsoleGameController {
 
+    public static final String YOU_WIN = "YOU WIN!!!";
+    public static final String CONTINUE_PLAYING = "Continue playing? (y/n)";
+    public static final String GAME_OVER = "GAME OVER!!!";
+    public static final String SYMBOL_UP = "w";
+    public static final String SYMBOL_LEFT = "a";
+    public static final String SYMBOL_DOWN = "s";
+    public static final String SYMBOL_RIGHT = "d";
+    public static final String SYMBOL_EXIT = "e";
+    public static final String SYMBOL_YES = "y";
+
     private GameField field;
     private GameFieldPrinter printer;
 
@@ -19,23 +29,23 @@ public class ConsoleGameController {
         while (isRun){
             if (sc.hasNext()){
                 switch (sc.next()){
-                    case "w":
-                        field.move(Direction.UP);
-                        field.fillEntryCell();
+                    case SYMBOL_UP:
+                        if (field.move(Direction.UP))
+                            field.fillEntryCell();
                         break;
-                    case "a":
-                        field.move(Direction.LEFT);
-                        field.fillEntryCell();
+                    case SYMBOL_LEFT:
+                        if (field.move(Direction.LEFT))
+                            field.fillEntryCell();
                         break;
-                    case "s":
-                        field.move(Direction.DOWN);
-                        field.fillEntryCell();
+                    case SYMBOL_DOWN:
+                        if (field.move(Direction.DOWN))
+                            field.fillEntryCell();
                         break;
-                    case "d":
-                        field.move(Direction.RIGHT);
-                        field.fillEntryCell();
+                    case SYMBOL_RIGHT:
+                        if (field.move(Direction.RIGHT))
+                            field.fillEntryCell();
                         break;
-                    case "e":
+                    case SYMBOL_EXIT:
                         isRun = false;
                         break;
                 }
@@ -45,14 +55,15 @@ public class ConsoleGameController {
                 printer.printToStream(System.out, field);
 
                 if (field.hasCellWith2048()){
-                    System.out.println("YOU WIN!!!\nContinue playing? (y/n)");
+                    System.out.println(YOU_WIN);
+                    System.out.println(CONTINUE_PLAYING);
                     switch (sc.next()){
-                        case "n": isRun = false; break;
-                        default: break;
+                        case SYMBOL_YES: break;
+                        default: isRun = false; break;
                     }
                 }
                 if (!field.hasAvailableMoves()){
-                    System.out.println("GAME OVER!!!");
+                    System.out.println(GAME_OVER);
                     isRun = false;
                 }
             }

@@ -1,7 +1,5 @@
 package com.generator;
 
-import java.util.Random;
-
 public class RandomCellValueGenerator implements CellValueGenerator{
     @Override
     public long getNumber() {

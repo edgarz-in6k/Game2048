@@ -12,11 +12,11 @@ public enum LayoutCell {
     TWO_HUNDRED_AND_FIFTY_SIX(256, "\u001B[33m"),
     FIVE_HUNDRED_AND_TWELVE(512, "\u001B[93m"),
     ONE_THOUSAND_AND_TWENTY_FOUR(1024, "\u001B[91m"),
-    TWO_THOUSAND_AND_FORTY_EIGHT(2048, "\u001B[31m"),
-    RESET(-1, "\u001B[0m");
+    TWO_THOUSAND_AND_FORTY_EIGHT(2048, "\u001B[31m");
 
     public final long value;
     public final String color;
+    public static final String RESET_COLOR = "\u001B[0m";
 
     LayoutCell(int value, String color) {
         this.value = value;

@@ -11,10 +11,6 @@ public class App {
         GameField gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), sizeField);
         gameField.fillEntryCell();
         gameField.fillEntryCell();
-        //gameField.move(Direction.DOWN);
-        //GameFieldPrinter gameFieldPrinter = new GameFieldPrinter();
-        //gameFieldPrinter.printToStream(System.out, gameField);
-        //System.out.println(gameField);
         ConsoleGameController controller = new ConsoleGameController(gameField);
         controller.run();
     }
