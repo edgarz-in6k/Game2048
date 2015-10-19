@@ -16,12 +16,8 @@ public class StaticCellValueFillerTest {
         for (int i = 0; i < 6; i++) {
             gameField.fillEmptyCell();
         }
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        long[] fieldValues = gameField.getArray();
+        assertArrayEquals(fieldValues, new long[]{
                 2, 2, 2, 2,
                 2, 2, 0, 0,
                 0, 0, 0, 0,

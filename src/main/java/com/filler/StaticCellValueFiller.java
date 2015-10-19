@@ -8,7 +8,6 @@ import java.util.List;
 public class StaticCellValueFiller implements CellValueFiller {
 
     private CellValueGenerator generator;
-    private int size;
 
     public StaticCellValueFiller(CellValueGenerator generator){
        this.generator = generator;
@@ -16,16 +15,6 @@ public class StaticCellValueFiller implements CellValueFiller {
 
     @Override
     public void fill(List<GameCell> emptyCell) {
-        for (int i = 0; i < size; i++) {
-            if (emptyCell.get(i).getValue() == 0){
-                emptyCell.get(i).setValue(generator.getNumber());
-                return;
-            }
-        }
-    }
-
-    @Override
-    public void setSize(int size) {
-        this.size = size;
+        emptyCell.get(0).setValue(generator.getNumber());
     }
 }

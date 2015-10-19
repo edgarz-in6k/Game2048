@@ -9,7 +9,6 @@ import java.util.Random;
 public class RandomCellValueFiller implements CellValueFiller {
 
     private CellValueGenerator generator;
-    private int size;
 
     public RandomCellValueFiller(CellValueGenerator generator) {
         this.generator = generator;
@@ -19,14 +18,6 @@ public class RandomCellValueFiller implements CellValueFiller {
     public void fill(List<GameCell> emptyCell) {
         Random random = new Random();
         int randomIndex = random.nextInt(emptyCell.size());
-        while (emptyCell.get(randomIndex).getValue() != 0) {
-            randomIndex = random.nextInt(emptyCell.size());
-        }
         emptyCell.get(randomIndex).setValue(generator.getNumber());
-    }
-
-    @Override
-    public void setSize(int size) {
-        this.size = size;
     }
 }

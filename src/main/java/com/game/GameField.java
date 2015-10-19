@@ -20,7 +20,6 @@ public class GameField {
         this.size = size;
         this.score = 0;
         createCells(size);
-        filler.setSize(size);
     }
 
     public void fillEmptyCell() {
@@ -173,29 +172,25 @@ public class GameField {
         return result;
     }
 
-    private GameCell getCell(int row, int col) {
+    public GameCell getCell(int row, int col) {
         return cells.get(row * size + col);
     }
 
     public boolean hasAvailableMoves() {
-        if (hasNullCell())
-            return true;
-        if (hasNeighborSame())
-            return true;
-        return false;
+        return hasNullCell() || hasNeighborSame();
     }
 
     private boolean hasNeighborSame() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
                 GameCell cell = getCell(row, col);
-                if (row - 1 >=0 && getCell(row - 1, col).getValue() == cell.getValue())
+                if (row - 1 >=0 && getCell(row - 1, col).equals(cell))
                     return true;
-                if (col - 1 >= 0 && getCell(row, col - 1).getValue() == cell.getValue())
+                if (col - 1 >= 0 && getCell(row, col - 1).equals(cell))
                     return true;
-                if (col + 1 < size && getCell(row, col + 1).getValue() == cell.getValue())
+                if (col + 1 < size && getCell(row, col + 1).equals(cell))
                     return true;
-                if (row + 1 < size && getCell(row + 1, col).getValue() == cell.getValue())
+                if (row + 1 < size && getCell(row + 1, col).equals(cell))
                     return true;
             }
         }
@@ -232,11 +227,15 @@ public class GameField {
         return result;
     }
 
-    public int size() {
-        return size;
-    }
-
     public long getScore() {
         return score;
+    }
+
+    public long[] getArray(){
+        long[] array = new long[size * size];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = getCell(i/size, i%size).getValue();
+        }
+        return array;
     }
 }

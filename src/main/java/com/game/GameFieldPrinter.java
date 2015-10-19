@@ -4,7 +4,12 @@ import java.io.PrintStream;
 
 public class GameFieldPrinter {
 
+    private PrintStream printStream;
     private static final String NEW_LINE = "\n";
+
+    public GameFieldPrinter(PrintStream printStream) {
+        this.printStream = printStream;
+    }
 
     public String outputANSI(GameField field) {
         String result = "";
@@ -20,11 +25,16 @@ public class GameFieldPrinter {
         return result;
     }
 
-    public void printToStream(PrintStream printStream, GameField field) {
+    public void printToStream(GameField field) {
         printStream.print(outputANSI(field));
     }
 
-    public void printToStream(PrintStream printStream, String s) {
+    public void printToStream(String s) {
         printStream.print(s);
+    }
+
+    public void indent() {
+        for (int i=0; i<5; i++)
+            printToStream(NEW_LINE);
     }
 }

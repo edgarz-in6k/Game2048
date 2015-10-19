@@ -12,19 +12,29 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class GameFieldTestForFive {
 
-    private int size;
+    private static final int SIZE = 5;
+    private GameField gameField;
 
     @Before
-    public void init() {
-        size = 5;
+    public void setUp() throws Exception {
+        gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), SIZE);
+    }
+
+    private void assertGameFieldValuesEqual(long[] actuals) {
+        assertArrayEquals(gameField.getArray(), actuals);
+    }
+
+    private void fillGameField(int count) {
+        for (int i = 0; i < count; i++)
+            gameField.fillEmptyCell();
     }
 
     @Test
     public void testToString() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
+        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), SIZE);
         String field = gameField.toString();
         Assert.assertEquals(field,
-                "     0     0     0     0     0\n" +
+                        "     0     0     0     0     0\n" +
                         "     0     0     0     0     0\n" +
                         "     0     0     0     0     0\n" +
                         "     0     0     0     0     0\n" +
@@ -32,22 +42,15 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldOneDirectDown() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22200
-        //00000
-        //00000
-        //00000
-        for (int i = 0; i < 8; i++)
-            gameField.fillEmptyCell();
+    public void testMoveDownOneTime() {
+        //2 2 2 2 2
+        //2 2 2 0 0
+        //0 0 0 0 0
+        //0 0 0 0 0
+        //0 0 0 0 0
+        fillGameField(8);
         gameField.move(Direction.DOWN);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -57,23 +60,16 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldTwoDirectDown() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22222
-        //22222
-        //22222
-        //22000
-        for (int i = 0; i < 22; i++)
-            gameField.fillEmptyCell();
+    public void testMoveDownNotMargeResultOfMarge() {
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 0 0 0
+        fillGameField(22);
         gameField.move(Direction.DOWN);
         gameField.move(Direction.DOWN);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -83,22 +79,15 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldOneDirectUp() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22200
-        //00000
-        //00000
-        //00000
-        for (int i = 0; i < 8; i++)
-            gameField.fillEmptyCell();
+    public void testMoveUpOneTime() {
+        // 2 2 2 2 2
+        // 2 2 2 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        fillGameField(8);
         gameField.move(Direction.UP);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 4, 4, 4, 2, 2,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -108,23 +97,16 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldTwoDirectUp() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22222
-        //22222
-        //22222
-        //22000
-        for (int i = 0; i < 22; i++)
-            gameField.fillEmptyCell();
+    public void testMoveUpNotMargeResultOfMarge() {
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 0 0 0
+        fillGameField(22);
         gameField.move(Direction.UP);
         gameField.move(Direction.UP);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 8, 8, 8, 8, 8,
                 2, 2, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -134,22 +116,15 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldOneDirectRight() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22200
-        //00000
-        //00000
-        //00000
-        for (int i = 0; i < 8; i++)
-            gameField.fillEmptyCell();
+    public void testMoveRightOneTime() {
+        // 2 2 2 2 2
+        // 2 2 2 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        fillGameField(8);
         gameField.move(Direction.RIGHT);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 0, 0, 2, 4, 4,
                 0, 0, 0, 2, 4,
                 0, 0, 0, 0, 0,
@@ -159,23 +134,16 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldTwoDirectRight() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22222
-        //22222
-        //22222
-        //22200
-        for (int i = 0; i < 23; i++)
-            gameField.fillEmptyCell();
+    public void testMoveRightNotMargeResultOfMarge() {
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 0 0
+        fillGameField(23);
         gameField.move(Direction.RIGHT);
         gameField.move(Direction.RIGHT);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 0, 0, 0, 2, 8,
                 0, 0, 0, 2, 8,
                 0, 0, 0, 2, 8,
@@ -185,22 +153,15 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldOneDirectLeft() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22200
-        //00000
-        //00000
-        //00000
-        for (int i = 0; i < 8; i++)
-            gameField.fillEmptyCell();
+    public void testMoveLeftOneTime() {
+        // 2 2 2 2 2
+        // 2 2 2 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        // 0 0 0 0 0
+        fillGameField(8);
         gameField.move(Direction.LEFT);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 4, 4, 2, 0, 0,
                 4, 2, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -210,23 +171,16 @@ public class GameFieldTestForFive {
     }
 
     @Test
-    public void testFieldTwoDirectLeft() {
-        GameField gameField = new GameField(new StaticCellValueFiller(new StaticCellValueGenerator()), size);
-        //22222
-        //22222
-        //22222
-        //22222
-        //22200
-        for (int i = 0; i < 23; i++)
-            gameField.fillEmptyCell();
+    public void testMoveLeftNotMargeResultOfMarge() {
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 2 2
+        // 2 2 2 0 0
+        fillGameField(23);
         gameField.move(Direction.LEFT);
         gameField.move(Direction.LEFT);
-        String field = gameField.toString();
-        Scanner sc = new Scanner(field);
-        int[] fieldValues = new int[size * size];
-        for (int i = 0; sc.hasNextInt(); i++)
-            fieldValues[i] = sc.nextInt();
-        assertArrayEquals(fieldValues, new int[]{
+        assertGameFieldValuesEqual(new long[]{
                 8, 2, 0, 0, 0,
                 8, 2, 0, 0, 0,
                 8, 2, 0, 0, 0,
