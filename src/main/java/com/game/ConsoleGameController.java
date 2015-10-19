@@ -19,15 +19,42 @@ public class ConsoleGameController {
         while (isRun){
             if (sc.hasNext()){
                 switch (sc.next()){
-                    case "w": field.move(Direction.UP); field.fillEntryCell(); break;
-                    case "a": field.move(Direction.LEFT); field.fillEntryCell(); break;
-                    case "s": field.move(Direction.DOWN); field.fillEntryCell(); break;
-                    case "d": field.move(Direction.RIGHT); field.fillEntryCell(); break;
-                    case "e": isRun = false; break;
+                    case "w":
+                        field.move(Direction.UP);
+                        field.fillEntryCell();
+                        break;
+                    case "a":
+                        field.move(Direction.LEFT);
+                        field.fillEntryCell();
+                        break;
+                    case "s":
+                        field.move(Direction.DOWN);
+                        field.fillEntryCell();
+                        break;
+                    case "d":
+                        field.move(Direction.RIGHT);
+                        field.fillEntryCell();
+                        break;
+                    case "e":
+                        isRun = false;
+                        break;
                 }
                 for (int i=0; i<field.size(); i++)
                     System.out.println();
+
                 printer.printToStream(System.out, field);
+
+                if (field.hasCellWith2048()){
+                    System.out.println("YOU WIN!!!\nContinue playing? (y/n)");
+                    switch (sc.next()){
+                        case "n": isRun = false; break;
+                        default: break;
+                    }
+                }
+                if (!field.hasAvailableMoves()){
+                    System.out.println("GAME OVER!!!");
+                    isRun = false;
+                }
             }
         }
     }

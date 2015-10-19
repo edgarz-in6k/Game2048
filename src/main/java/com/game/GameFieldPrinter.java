@@ -5,6 +5,7 @@ import java.io.PrintStream;
 public class GameFieldPrinter {
     public String outputANSI(GameField field) {
         String result = "";
+        result += field.getScore();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 result += String.format("%s", LayoutCell.valueToColor(field.getValue(i, j)));
