@@ -2,7 +2,7 @@ package com.game;
 
 import java.io.PrintStream;
 
-public class GameFieldPrinter {
+public class GameFieldPrinter implements GameFieldPrinterInterface {
 
     private PrintStream printStream;
     private static final String NEW_LINE = "\n";
@@ -11,7 +11,7 @@ public class GameFieldPrinter {
         this.printStream = printStream;
     }
 
-    public String outputANSI(GameField field) {
+    private String outputANSI(GameFieldInterface field) {
         String result = "";
         result += LayoutCell.COLOR_SCORE + "Score: " + field.getScore() + LayoutCell.RESET_COLOR + NEW_LINE;
         for (int i = 0; i < 4; i++) {
@@ -25,14 +25,17 @@ public class GameFieldPrinter {
         return result;
     }
 
-    public void printToStream(GameField field) {
+    @Override
+    public void printToStream(GameFieldInterface field) {
         printStream.print(outputANSI(field));
     }
 
+    @Override
     public void printToStream(String s) {
         printStream.print(s);
     }
 
+    @Override
     public void indent() {
         for (int i=0; i<5; i++)
             printToStream(NEW_LINE);

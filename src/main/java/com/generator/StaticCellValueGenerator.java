@@ -1,10 +1,5 @@
 package com.generator;
 
-import com.game.GameCell;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class StaticCellValueGenerator implements CellValueGenerator{
 
     private long value;

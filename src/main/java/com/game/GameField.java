@@ -5,7 +5,7 @@ import com.filler.CellValueFiller;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GameField {
+public class GameField implements GameFieldInterface {
 
     private static final String NEW_LINE = "\n";
     private static final long VALUE_NULL = 0;
@@ -22,6 +22,7 @@ public class GameField {
         createCells(size);
     }
 
+    @Override
     public void fillEmptyCell() {
         filler.fill(
                 cells.stream().filter(GameCell::isEmpty).collect(Collectors.toList())
@@ -34,6 +35,7 @@ public class GameField {
             cells.add(new GameCell());
     }
 
+    @Override
     public boolean move(Direction direction) {
         switch (direction) {
             case UP:
@@ -86,6 +88,7 @@ public class GameField {
     }
 
     private boolean moved;
+
     private boolean up() {
         moved = false;
         Queue<Long> line = new ArrayDeque<>();
@@ -103,20 +106,20 @@ public class GameField {
     }
 
     private void addCellFillInQueue(Queue<Long> line, int col) {
+        int countLastNUll = 0;
         for (int row = 0; row < size; row++) {
             GameCell cell = getCell(row, col);
             if (!cell.isEmpty())
                 line.add(cell.getValue());
         }
-        int countLastNUll = 0;
         for (int row = size - 1; row >= 0; row--) {
             if (getCell(row, col).isEmpty())
                 countLastNUll++;
             else
                 break;
         }
-        //System.out.println(line.size() + " " + size + " " + countLastNUll);
-        if (!(line.size() == size + countLastNUll))
+        //System.out.println(line.size() + " " + countLastNUll + " " + size);
+        if (!(line.size() + countLastNUll == size))
             moved = true;
     }
 
@@ -172,42 +175,58 @@ public class GameField {
         return result;
     }
 
-    public GameCell getCell(int row, int col) {
-        return cells.get(row * size + col);
-    }
-
+    @Override
     public boolean hasAvailableMoves() {
+        System.out.println("hasNullCell: " + hasNullCell() + "| hasNeighborSame: " + hasNeighborSame());
         return hasNullCell() || hasNeighborSame();
-    }
-
-    private boolean hasNeighborSame() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                GameCell cell = getCell(row, col);
-                if (row - 1 >=0 && getCell(row - 1, col).equals(cell))
-                    return true;
-                if (col - 1 >= 0 && getCell(row, col - 1).equals(cell))
-                    return true;
-                if (col + 1 < size && getCell(row, col + 1).equals(cell))
-                    return true;
-                if (row + 1 < size && getCell(row + 1, col).equals(cell))
-                    return true;
-            }
-        }
-        return false;
     }
 
     private boolean hasNullCell() {
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                if (getCell(row, col).getValue() == LayoutCell.NULL.value)
+                if (getCell(row, col).isEmpty())
                     return true;
             }
         }
         return false;
     }
 
-    boolean hasCellWith2048() {
+    //a s a s a s a s a s a s
+    private boolean hasNeighborSame() {
+        System.out.println("hasNeighborSame");
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                System.out.println("isUpNeighborSame: " + isUpNeighborSame(row, col) +
+                        "| isLeftNeighborSame: " + isLeftNeighborSame(row, col) +
+                        "| isRightNeighborSame: " + isRightNeighborSame(row, col) +
+                        "| isDownNeighborSame: " + isDownNeighborSame(row, col));
+                return isUpNeighborSame(row, col) ||
+                        isLeftNeighborSame(row, col) ||
+                        isRightNeighborSame(row, col) ||
+                        isDownNeighborSame(row, col);
+            }
+        }
+        return false;
+    }
+
+    private boolean isUpNeighborSame(int row, int col) {
+        return ((row + 1 < size) && (getCell(row + 1, col).equals(getCell(row, col))));
+    }
+
+    private boolean isRightNeighborSame(int row, int col) {
+        return (col + 1 < size) && getCell(row, col + 1).equals(getCell(row, col));
+    }
+
+    private boolean isLeftNeighborSame(int row, int col) {
+        return (col - 1 >= 0) && getCell(row, col - 1).equals(getCell(row, col));
+    }
+
+    private boolean isDownNeighborSame(int row, int col) {
+        return (row - 1 >= 0) && getCell(row - 1, col).equals(getCell(row, col));
+    }
+
+    @Override
+    public boolean hasCellWith2048() {
         for (GameCell gameCell : cells) {
             if (gameCell.getValue() == LayoutCell.TWO_THOUSAND_AND_FORTY_EIGHT.value)
                 return true;
@@ -227,14 +246,18 @@ public class GameField {
         return result;
     }
 
+    public GameCell getCell(int row, int col) {
+        return cells.get(row * size + col);
+    }
+
     public long getScore() {
         return score;
     }
 
-    public long[] getArray(){
+    public long[] getArray() {
         long[] array = new long[size * size];
         for (int i = 0; i < array.length; i++) {
-            array[i] = getCell(i/size, i%size).getValue();
+            array[i] = getCell(i / size, i % size).getValue();
         }
         return array;
     }

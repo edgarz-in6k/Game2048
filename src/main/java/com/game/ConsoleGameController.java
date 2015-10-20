@@ -1,5 +1,8 @@
 package com.game;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+
 public class ConsoleGameController {
 
     public static final String NEW_LINE = "\n";
@@ -7,21 +10,27 @@ public class ConsoleGameController {
     public static final String CONTINUE_PLAYING = "Continue playing? (y/n)" + NEW_LINE;
     public static final String GAME_OVER = "GAME OVER!!!" + NEW_LINE;
 
-    private GameField field;
-    private GameFieldPrinter printer;
-    private GameFieldScanner scanner;
+    private GameFieldInterface field;
+    private GameFieldPrinterInterface printer;
+    private GameFieldScannerInterface scanner;
 
-    public ConsoleGameController(GameField field) {
+    /*public ConsoleGameController(GameFieldInterface field, PrintStream printStream, InputStream inputStream) {
         this.field = field;
-        printer = new GameFieldPrinter(System.out);
-        scanner = new GameFieldScanner(System.in);
+        printer = new GameFieldPrinter(printStream);
+        scanner = new GameFieldScanner(inputStream);
+    }*/
+
+    public ConsoleGameController(GameFieldInterface field, GameFieldPrinterInterface printer, GameFieldScannerInterface scanner) {
+        this.field = field;
+        this.printer = printer;
+        this.scanner = scanner;
     }
 
     public void run(){
         printer.printToStream(field);
         boolean isRun = true;
         while (isRun){
-            isRun = scanner.waitCheck(field);
+            isRun = scanner.scanCommand(field);
 
             printer.indent();
 
@@ -29,7 +38,7 @@ public class ConsoleGameController {
 
             if (field.hasCellWith2048()){
                 printer.printToStream(YOU_WIN + CONTINUE_PLAYING);
-                isRun = scanner.waitPlaying();
+                isRun = scanner.continueGame();
             }
             if (!field.hasAvailableMoves()){
                 printer.printToStream(GAME_OVER);

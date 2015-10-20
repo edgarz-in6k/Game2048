@@ -3,7 +3,7 @@ package com.game;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class GameFieldScanner {
+public class GameFieldScanner implements GameFieldScannerInterface{
 
     public static final String SYMBOL_UP = "w";
     public static final String SYMBOL_LEFT = "a";
@@ -11,6 +11,7 @@ public class GameFieldScanner {
     public static final String SYMBOL_RIGHT = "d";
     public static final String SYMBOL_EXIT = "e";
     public static final String SYMBOL_YES = "y";
+    public static final String SYMBOL_NO = "n";
 
     private Scanner scanner;
 
@@ -18,44 +19,45 @@ public class GameFieldScanner {
         this.scanner = new Scanner(inputStream);
     }
 
-    public boolean waitCheck(GameField field){
+    @Override
+    public boolean scanCommand(GameFieldInterface field) {
         boolean inCorrectInput = true;
+        boolean isFillerCell = false;
         while (inCorrectInput){
             if (scanner.hasNext()){
                 inCorrectInput = false;
                 switch (scanner.next()){
                     case SYMBOL_UP:
-                        if (field.move(Direction.UP))
-                            field.fillEmptyCell();
+                        isFillerCell = field.move(Direction.UP);
                         break;
                     case SYMBOL_LEFT:
-                        if (field.move(Direction.LEFT))
-                            field.fillEmptyCell();
+                        isFillerCell = field.move(Direction.LEFT);
                         break;
                     case SYMBOL_DOWN:
-                        if (field.move(Direction.DOWN))
-                            field.fillEmptyCell();
+                        isFillerCell = field.move(Direction.DOWN);
                         break;
                     case SYMBOL_RIGHT:
-                        if (field.move(Direction.RIGHT))
-                            field.fillEmptyCell();
+                        isFillerCell = field.move(Direction.RIGHT);
                         break;
                     case SYMBOL_EXIT:
                         return false;
                     default:
                         inCorrectInput = true;
                 }
+                if (isFillerCell)
+                    field.fillEmptyCell();
             }
         }
         return true;
     }
 
-    public boolean waitPlaying() {
-        switch (scanner.next()){
-            case SYMBOL_YES: break;
-            default:
-                return false;
+    @Override
+    public boolean continueGame() {
+        while (true){
+            switch (scanner.next()){
+                case SYMBOL_YES: return true;
+                case SYMBOL_NO: return false;
+            }
         }
-        return true;
     }
 }

@@ -23,7 +23,7 @@ public class GameFieldTestForFour {
 
     private void createProgressiveGameField() {
         gameField = new GameField(new StaticCellValueFiller(new StaticProgressiveCellValueGenerator()), SIZE);
-        fillGameField(16);
+        fillGameField(SIZE * SIZE);
     }
 
     private void assertGameFieldValuesEqual(long[] actuals) {
@@ -221,8 +221,8 @@ public class GameFieldTestForFour {
         // 2 2 2 2
         // 2 2 2 2
         // 2 2 2 2
-        // 2 2 0 0
-        fillGameField(14);
+        // 2 2 2 0
+        fillGameField(15);
         assertTrue(gameField.hasAvailableMoves());
     }
 
