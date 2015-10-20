@@ -66,13 +66,12 @@ public class GameFieldTestForFive {
         // 2 2 0 0 0
         fillGameField(22);
         gameField.move(Direction.DOWN);
-        gameField.move(Direction.DOWN);
         assertGameFieldValuesEqual(new long[]{
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
                 2, 2, 0, 0, 0,
-                8, 8, 8, 8, 8
+                4, 4, 4, 4, 4,
+                4, 4, 4, 4, 4
         });
     }
 
@@ -103,11 +102,10 @@ public class GameFieldTestForFive {
         // 2 2 0 0 0
         fillGameField(22);
         gameField.move(Direction.UP);
-        gameField.move(Direction.UP);
         assertGameFieldValuesEqual(new long[]{
-                8, 8, 8, 8, 8,
+                4, 4, 4, 4, 4,
+                4, 4, 4, 4, 4,
                 2, 2, 0, 0, 0,
-                0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0
         });
@@ -177,12 +175,11 @@ public class GameFieldTestForFive {
         // 2 2 2 0 0
         fillGameField(23);
         gameField.move(Direction.LEFT);
-        gameField.move(Direction.LEFT);
         assertGameFieldValuesEqual(new long[]{
-                8, 2, 0, 0, 0,
-                8, 2, 0, 0, 0,
-                8, 2, 0, 0, 0,
-                8, 2, 0, 0, 0,
+                4, 4, 2, 0, 0,
+                4, 4, 2, 0, 0,
+                4, 4, 2, 0, 0,
+                4, 4, 2, 0, 0,
                 4, 2, 0, 0, 0
         });
     }

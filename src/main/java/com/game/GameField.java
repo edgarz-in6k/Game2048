@@ -177,7 +177,6 @@ public class GameField implements GameFieldInterface {
 
     @Override
     public boolean hasAvailableMoves() {
-        System.out.println("hasNullCell: " + hasNullCell() + "| hasNeighborSame: " + hasNeighborSame());
         return hasNullCell() || hasNeighborSame();
     }
 
@@ -191,25 +190,21 @@ public class GameField implements GameFieldInterface {
         return false;
     }
 
-    //a s a s a s a s a s a s
     private boolean hasNeighborSame() {
-        System.out.println("hasNeighborSame");
         for (int row = 0; row < size; row++) {
             for (int col = 0; col < size; col++) {
-                System.out.println("isUpNeighborSame: " + isUpNeighborSame(row, col) +
-                        "| isLeftNeighborSame: " + isLeftNeighborSame(row, col) +
-                        "| isRightNeighborSame: " + isRightNeighborSame(row, col) +
-                        "| isDownNeighborSame: " + isDownNeighborSame(row, col));
-                return isUpNeighborSame(row, col) ||
+                if  (isUpNeighborSame(row, col) ||
                         isLeftNeighborSame(row, col) ||
                         isRightNeighborSame(row, col) ||
-                        isDownNeighborSame(row, col);
+                        isDownNeighborSame(row, col))
+                    return true;
             }
         }
         return false;
     }
 
     private boolean isUpNeighborSame(int row, int col) {
+        //System.out.println("hasNeighborSame (row + 1 < size): ");
         return ((row + 1 < size) && (getCell(row + 1, col).equals(getCell(row, col))));
     }
 
@@ -260,5 +255,11 @@ public class GameField implements GameFieldInterface {
             array[i] = getCell(i / size, i % size).getValue();
         }
         return array;
+    }
+
+    public void setArray(long[] array){
+        for (int i = 0; i < size * size; i++) {
+            getCell(i / size, i % size).setValue(array[i]);
+        }
     }
 }

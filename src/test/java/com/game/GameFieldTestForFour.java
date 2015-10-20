@@ -7,9 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GameFieldTestForFour {
 
@@ -42,6 +40,36 @@ public class GameFieldTestForFour {
                         "     0     0     0     0\n" +
                         "     0     0     0     0\n" +
                         "     0     0     0     0\n");
+    }
+
+    @Test
+    public void testGetArray(){
+        // 2 2 2 2
+        // 2 2 2 2
+        // 2 2 2 2
+        // 2 2 0 0
+        fillGameField(14);
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                assertEquals(gameField.getCell(i, j).getValue(), gameField.getArray()[i*SIZE+j]);
+            }
+        }
+    }
+
+    @Test
+    public void testSetArray(){
+        gameField.setArray(new long[]{
+                8,  4,  2,  2,
+                16,  8,  4,  2,
+                32, 16,  8,  4,
+                64, 32, 16,  8
+        });
+        assertGameFieldValuesEqual(new long[]{
+                8,  4,  2,  2,
+                16,  8,  4,  2,
+                32, 16,  8,  4,
+                64, 32, 16,  8
+        });
     }
 
     @Test
@@ -100,10 +128,9 @@ public class GameFieldTestForFour {
         // 2 2 0 0
         fillGameField(14);
         gameField.move(Direction.UP);
-        gameField.move(Direction.UP);
         assertGameFieldValuesEqual(new long[]{
-                8, 8, 4, 4,
-                0, 0, 2, 2,
+                4, 4, 4, 4,
+                4, 4, 2, 2,
                 0, 0, 0, 0,
                 0, 0, 0, 0
         });
@@ -133,11 +160,10 @@ public class GameFieldTestForFour {
         //2200
         fillGameField(14);
         gameField.move(Direction.RIGHT);
-        gameField.move(Direction.RIGHT);
         assertGameFieldValuesEqual(new long[]{
-                0, 0, 0, 8,
-                0, 0, 0, 8,
-                0, 0, 0, 8,
+                0, 0, 4, 4,
+                0, 0, 4, 4,
+                0, 0, 4, 4,
                 0, 0, 0, 4
         });
     }
@@ -166,11 +192,10 @@ public class GameFieldTestForFour {
         // 2 2 0 0
         fillGameField(14);
         gameField.move(Direction.LEFT);
-        gameField.move(Direction.LEFT);
         assertGameFieldValuesEqual(new long[]{
-                8, 0, 0, 0,
-                8, 0, 0, 0,
-                8, 0, 0, 0,
+                4, 4, 0, 0,
+                4, 4, 0, 0,
+                4, 4, 0, 0,
                 4, 0, 0, 0
         });
     }
@@ -223,6 +248,21 @@ public class GameFieldTestForFour {
         // 2 2 2 2
         // 2 2 2 0
         fillGameField(15);
+        assertTrue(gameField.hasAvailableMoves());
+    }
+
+    @Test
+    public void testHasAvailableMovesFullField() {
+        gameField.setArray(new long[]{
+                 8,  4,  2,  2,
+                16,  8,  4,  2,
+                32, 16,  8,  4,
+                64, 32, 16,  8
+        });
+        // 2 2 2 2
+        // 2 2 2 2
+        // 2 2 2 2
+        // 2 2 2 2
         assertTrue(gameField.hasAvailableMoves());
     }
 
