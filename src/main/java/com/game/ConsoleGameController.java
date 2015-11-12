@@ -1,8 +1,5 @@
 package com.game;
 
-import java.io.InputStream;
-import java.io.PrintStream;
-
 public class ConsoleGameController {
 
     public static final String NEW_LINE = "\n";
@@ -13,12 +10,6 @@ public class ConsoleGameController {
     private GameFieldInterface field;
     private GameFieldPrinterInterface printer;
     private GameFieldScannerInterface scanner;
-
-    /*public ConsoleGameController(GameFieldInterface field, PrintStream printStream, InputStream inputStream) {
-        this.field = field;
-        printer = new GameFieldPrinter(printStream);
-        scanner = new GameFieldScanner(inputStream);
-    }*/
 
     public ConsoleGameController(GameFieldInterface field, GameFieldPrinterInterface printer, GameFieldScannerInterface scanner) {
         this.field = field;
