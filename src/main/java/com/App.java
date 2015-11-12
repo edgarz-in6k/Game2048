@@ -1,27 +1,12 @@
 package com;
 
 import com.game.ConsoleGameController;
-import com.game.GameFieldScanner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.InputStream;
-
 public class App {
 
-    public static final int FIELD_SIZE = 4;
-
     public static void main( String[] args ) {
-        /*CellValueFiller filler = new RandomCellValueFiller(new RandomCellValueGenerator());
-        GameFieldInterface field = new GameField(filler, FIELD_SIZE);
-        //GameFieldPrinterInterface printer = new GameFieldPrinter(System.out);
-        for (int i = 0; i < 2; i++)
-            field.fillEmptyCell();
-        //printer.printToStream(field);
-        ConsoleGameController controller = new ConsoleGameController(field,
-                new GameFieldPrinter(System.out),
-                new GameFieldScanner(System.in));
-        controller.run();*/
 
         ApplicationContext ct = new ClassPathXmlApplicationContext("spring.xml");
 
