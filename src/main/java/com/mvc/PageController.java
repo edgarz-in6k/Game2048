@@ -9,9 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class PageController {
@@ -68,6 +71,16 @@ public class PageController {
         model.addAttribute("key", "");
         model.addAttribute(GAME_FIELD, gameField);
         return "game";
+    }
+
+    @RequestMapping(value = "/ajaxtest", method = RequestMethod.GET)
+    @ResponseBody
+    public Set<String> ajaxTest() {
+        Set<String> records = new HashSet<>();
+        records.add("Record #1");
+        records.add("Record #2");
+
+        return records;
     }
 
 }

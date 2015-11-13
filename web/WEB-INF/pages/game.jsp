@@ -42,6 +42,14 @@
             if (xhr.status == 200){
 
             }*/
+
+            $(document).ready(function(){
+                $("#test").click(function(){
+                    $.get("/ajaxtest",function(data,status){
+                        alert("Data: " + data + "\nStatus: " + status);
+                    });
+                });
+            });
         }
     </script>
 
