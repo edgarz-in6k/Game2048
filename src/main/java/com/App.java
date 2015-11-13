@@ -8,7 +8,7 @@ public class App {
 
     public static void main( String[] args ) {
 
-        ApplicationContext ct = new ClassPathXmlApplicationContext("spring.xml");
+        ApplicationContext ct = new ClassPathXmlApplicationContext("classpath:/spring.xml");
 
         ConsoleGameController controller = ct.getBean(ConsoleGameController.class);
         controller.run();

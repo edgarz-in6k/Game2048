@@ -1,13 +1,12 @@
 package com.game;
 
-public class ConsoleGameController {
+public class ConsoleGameController extends GameControllerAbstract {
 
     public static final String NEW_LINE = "\n";
     public static final String YOU_WIN = "YOU WIN!!!" + NEW_LINE;
     public static final String CONTINUE_PLAYING = "Continue playing? (y/n)" + NEW_LINE;
     public static final String GAME_OVER = "GAME OVER!!!" + NEW_LINE;
 
-    private GameFieldInterface field;
     private GameFieldPrinterInterface printer;
     private GameFieldScannerInterface scanner;
 
@@ -18,15 +17,14 @@ public class ConsoleGameController {
     }
 
     public void run(){
-        field.fillEmptyCell();
-        field.fillEmptyCell();
+        beginGame();
         printer.printToStream(field);
         boolean isRun = true;
         while (isRun){
-            isRun = scanner.scanCommand(field);
+
+            isRun = makeStep();
 
             printer.indent();
-
             printer.printToStream(field);
 
             if (field.hasCellWith2048()){
@@ -38,5 +36,16 @@ public class ConsoleGameController {
                 isRun = false;
             }
         }
+    }
+
+    @Override
+    public boolean makeStep() {
+        return scanner.scanCommand(field);
+    }
+
+    @Override
+    public void beginGame() {
+        field.fillEmptyCell();
+        field.fillEmptyCell();
     }
 }
