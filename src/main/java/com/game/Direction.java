@@ -4,5 +4,6 @@ public enum Direction {
     UP,
     LEFT,
     RIGHT,
-    DOWN
+    DOWN,
+    NO_DIRECTION
 }

@@ -3,7 +3,7 @@ package com.game;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class GameFieldScanner implements GameFieldScannerInterface{
+public class GameFieldScanner implements GameFieldScannerInterface {
 
     public static final String SYMBOL_UP = "w";
     public static final String SYMBOL_LEFT = "a";
@@ -20,35 +20,23 @@ public class GameFieldScanner implements GameFieldScannerInterface{
     }
 
     @Override
-    public boolean scanCommand(GameFieldInterface field) {
-        boolean inCorrectInput = true;
-        boolean isFillerCell = false;
-        while (inCorrectInput){
+    public Direction scanCommand() {
+        while (true){
             if (scanner.hasNext()){
-                inCorrectInput = false;
                 switch (scanner.next()){
                     case SYMBOL_UP:
-                        isFillerCell = field.move(Direction.UP);
-                        break;
+                        return Direction.UP;
                     case SYMBOL_LEFT:
-                        isFillerCell = field.move(Direction.LEFT);
-                        break;
+                        return Direction.LEFT;
                     case SYMBOL_DOWN:
-                        isFillerCell = field.move(Direction.DOWN);
-                        break;
+                        return Direction.DOWN;
                     case SYMBOL_RIGHT:
-                        isFillerCell = field.move(Direction.RIGHT);
-                        break;
+                        return Direction.RIGHT;
                     case SYMBOL_EXIT:
-                        return false;
-                    default:
-                        inCorrectInput = true;
+                        return Direction.NO_DIRECTION;
                 }
-                if (isFillerCell)
-                    field.fillEmptyCell();
             }
         }
-        return true;
     }
 
     @Override

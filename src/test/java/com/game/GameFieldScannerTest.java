@@ -27,7 +27,10 @@ public class GameFieldScannerTest {
     }
 
     private boolean runScanCommand(String commandUp){
-        return runCommand(commandUp).scanCommand(gameField);
+        Direction direction = runCommand(commandUp).scanCommand();
+        if (direction != Direction.NO_DIRECTION)
+            gameField.move(direction);
+        return direction != Direction.NO_DIRECTION;
     }
 
     private boolean runContinueCommand(String commandUp){
@@ -53,9 +56,13 @@ public class GameFieldScannerTest {
         String commandRight = "d";
         String commandExit = "e";
         runScanCommand(commandUp);
+        gameField.fillEmptyCell();
         runScanCommand(commandLeft);
+        gameField.fillEmptyCell();
         runScanCommand(commandDown);
+        gameField.fillEmptyCell();
         runScanCommand(commandRight);
+        gameField.fillEmptyCell();
         assertArrayEquals(gameField.getArray(), new long[]{
                 2, 0, 0, 2,
                 0, 0, 0, 0,

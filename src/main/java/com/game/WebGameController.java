@@ -8,7 +8,7 @@ public class WebGameController extends GameControllerAbstract {
     }
 
     @Override
-    boolean makeStep() {
-        return false;
+    void makeStep(Direction direction) {
+
     }
 }

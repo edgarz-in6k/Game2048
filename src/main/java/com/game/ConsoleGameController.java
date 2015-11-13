@@ -22,7 +22,11 @@ public class ConsoleGameController extends GameControllerAbstract {
         boolean isRun = true;
         while (isRun){
 
-            isRun = makeStep();
+            Direction direction = scanner.scanCommand();
+            if (direction == Direction.NO_DIRECTION)
+                isRun = false;
+            else
+                makeStep(direction);
 
             printer.indent();
             printer.printToStream(field);
@@ -39,8 +43,9 @@ public class ConsoleGameController extends GameControllerAbstract {
     }
 
     @Override
-    public boolean makeStep() {
-        return scanner.scanCommand(field);
+    public void makeStep(Direction direction) {
+        field.move(direction);
+        field.fillEmptyCell();
     }
 
     @Override

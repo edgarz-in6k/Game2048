@@ -1,6 +1,6 @@
 package com.game;
 
 public interface GameFieldScannerInterface {
-    boolean scanCommand(GameFieldInterface field);
+    Direction scanCommand();
     boolean continueGame();
 }

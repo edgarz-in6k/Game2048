@@ -104,9 +104,9 @@ public class ConsoleGameControllerTest {
     class MyGameFieldScanner implements GameFieldScannerInterface {
 
         @Override
-        public boolean scanCommand(GameFieldInterface field) {
+        public Direction scanCommand() {
             printStream.print("scanCommand(GameFieldInterface field)\n");
-            return true;
+            return Direction.NO_DIRECTION;
         }
 
         @Override
