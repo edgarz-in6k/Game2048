@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <bean name="controller" class="com.game.ConsoleGameController">
+              <constructor-arg ref="gameField"/>
+              <constructor-arg ref="gameFieldPrinter"/>
+              <constructor-arg ref="gameFieldScanner"/>
+       </bean>
+
+       <bean name="gameField" class="com.game.GameField">
+              <constructor-arg ref="randomCellValueFiller"/>
+              <constructor-arg value="4"/>
+       </bean>
+
+
+       <bean name="randomCellValueFiller" class="com.filler.RandomCellValueFiller">
+              <constructor-arg ref="randomCellValueGenerator"/>
+       </bean>
+       <bean name="randomCellValueGenerator" class="com.generator.RandomCellValueGenerator"/>
+
+
+       <bean name="gameFieldPrinter" class="com.game.GameFieldPrinter">
+              <constructor-arg ref="printStream"/>
+       </bean>
+       <bean name="printStream" class="java.io.PrintStream">
+              <constructor-arg ref="streamOut"/>
+       </bean>
+       <bean id="streamOut" class="com.factory.StreamFactory"
+             factory-method="getSystemOut"/>
+
+
+       <bean name="gameFieldScanner" class="com.game.GameFieldScanner">
+              <constructor-arg ref="streamIn"/>
+       </bean>
+       <bean id="streamIn" class="com.factory.StreamFactory"
+             factory-method="getSystemIn"/>
+
+</beans>
