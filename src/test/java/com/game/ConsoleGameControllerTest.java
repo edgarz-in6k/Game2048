@@ -31,6 +31,8 @@ public class ConsoleGameControllerTest {
         ConsoleGameController controller = new ConsoleGameController(myGameField, myPrinter, myScanner);
         controller.run();
         assertEquals(outputStream.toString(),
+                "fillEmptyCell()\n" +
+                "fillEmptyCell()\n" +
                 "printToStream(GameFieldInterface field)\n" +
                 "scanCommand(GameFieldInterface field)\n" +
                 "indent()\n" +
@@ -53,7 +55,7 @@ public class ConsoleGameControllerTest {
 
         @Override
         public void fillEmptyCell() {
-            printStream.print("NO VISIBLE fillEmptyCell()\n");//!
+            printStream.print("fillEmptyCell()\n");//!
         }
 
         @Override
