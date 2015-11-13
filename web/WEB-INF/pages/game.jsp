@@ -20,20 +20,16 @@
         <%}%>
     </div>
 
-    <%--<form id="formSubmit" action="/move" method="POST" >
-        <input type="hidden" name="key" id="key" value="1"/>
-        <input type="submit" value="Submit"/>
-    </form>--%>
     <form id="key" action="1" method="POST">
         <input type="hidden" name="_method" value="POST">
-        <input type="submit">
+        <input type="submit" hidden>
     </form>
 
     <script>
 
         window.onkeyup = function(e) {
             var key = e.keyCode ? e.keyCode : e.which;
-            if ((key == 37) || (key == 38) || (key == 39) || (key == 40)){
+            if ([37, 38, 39, 40].indexOf(key) != -1){
                 var formSubmit = document.getElementById("key");
                 formSubmit.action = key;
                 formSubmit.submit();
@@ -46,22 +42,6 @@
             if (xhr.status == 200){
 
             }*/
-
-            <%--<%Direction direction;%>
-            switch (key){
-                case 37:
-                    <%direction = Direction.LEFT;%>
-                    break;
-                case 38:
-                    <%direction = Direction.UP;%>
-                    break;
-                case 39:
-                    <%direction = Direction.RIGHT;%>
-                    break;
-                case 40:
-                    <%direction = Direction.DOWN;%>
-                    break;
-            }--%>
         }
     </script>
 

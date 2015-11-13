@@ -9,6 +9,6 @@ public class WebGameController extends GameControllerAbstract {
 
     @Override
     void makeStep(Direction direction) {
-
+        field.move(direction);
     }
 }
