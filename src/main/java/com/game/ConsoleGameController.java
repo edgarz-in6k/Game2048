@@ -44,8 +44,11 @@ public class ConsoleGameController extends GameControllerAbstract {
 
     @Override
     public void makeStep(Direction direction) {
-        field.move(direction);
-        field.fillEmptyCell();
+        GameField tmp = new GameField(field.getFiller(), field.getSize());
+        tmp.setArray(field.getArray());
+        tmp.move(direction);
+        if (field.move(direction))
+            field.fillEmptyCell();
     }
 
     @Override

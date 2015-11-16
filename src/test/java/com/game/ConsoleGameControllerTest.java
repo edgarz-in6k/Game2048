@@ -1,5 +1,6 @@
 package com.game;
 
+import com.filler.CellValueFiller;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,6 +81,24 @@ public class ConsoleGameControllerTest {
         public GameCell getCell(int row, int col) {
             printStream.print("NO VISIBLE getCell(int row, int col)\n");//!
             return null;
+        }
+
+        @Override
+        public int getSize() {
+            printStream.print("NO VISIBLEgetSize()\n");//!
+            return 0;
+        }
+
+        @Override
+        public CellValueFiller getFiller() {
+            printStream.print("NO VISIBLE ellValueFiller getFiller()\n");//!
+            return null;
+        }
+
+        @Override
+        public long[] getArray() {
+            printStream.print("NO VISIBLE ellValueFiller getArray()\n");//!
+            return new long[0];
         }
     }
 

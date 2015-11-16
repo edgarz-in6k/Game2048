@@ -249,6 +249,14 @@ public class GameField implements GameFieldInterface {
         return score;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public CellValueFiller getFiller() {
+        return filler;
+    }
+
     public long[] getArray() {
         long[] array = new long[size * size];
         for (int i = 0; i < array.length; i++) {
