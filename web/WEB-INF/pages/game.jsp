@@ -1,8 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="com.game.GameField" %>
-<%@ page import="com.game.Direction" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--<% GameField gameField = (GameField) request.getAttribute("gameField"); %>--%>
 <% GameField gameField = (GameField) session.getAttribute("gameField"); %>
 <html>
 <head>
@@ -25,25 +23,8 @@
         </table>
     </div>
 
-    <form id="key" action="1" method="POST">
-        <input type="hidden" name="_method" value="POST">
-        <input type="submit" hidden>
-    </form>
-
     <script src="../../resources/jquery-1.11.3.js"></script>
-
     <script>
-
-        /*var key;
-        window.onkeyup = function(e) {
-            key = e.keyCode ? e.keyCode : e.which;
-            if ([37, 38, 39, 40].indexOf(key) != -1){
-                var formSubmit = document.getElementById("key");
-                formSubmit.action = key;
-                formSubmit.submit();
-            }
-        };*/
-
         jQuery(document).bind('keydown', function (evt) {
             var key = evt.which;
             if ([37, 38, 39, 40].indexOf(key) != -1){
@@ -63,8 +44,9 @@
                 });
             }
         });
-
     </script>
+
+    <h3><a href="admin**">Admin</a></h3>
 
 </body>
 </html>
