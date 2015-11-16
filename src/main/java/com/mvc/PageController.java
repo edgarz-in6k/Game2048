@@ -6,10 +6,7 @@ import com.game.GameField;
 import com.generator.RandomCellValueGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,18 +22,14 @@ public class PageController {
     public String game(Model model, HttpServletRequest request){
 
         HttpSession session = request.getSession();
-        GameField gameField = (GameField) session.getAttribute(GAME_FIELD);
 
-        if (gameField == null) {
-            gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), 4);
-            gameField.fillEmptyCell();
-            gameField.fillEmptyCell();
-            session.setAttribute(GAME_FIELD, gameField);
-        }
+        GameField gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), 4);
+        gameField.fillEmptyCell();
+        gameField.fillEmptyCell();
+        session.setAttribute(GAME_FIELD, gameField);
 
-        model.addAttribute("hello", "Hello game!");
-        model.addAttribute("key", "");
-        model.addAttribute(GAME_FIELD, gameField);
+        model.addAttribute("hello", "INIT");
+
         return "game";
     }
 
@@ -67,20 +60,40 @@ public class PageController {
                 break;
         }
 
-        model.addAttribute("hello", "Hello game!");
-        model.addAttribute("key", "");
-        model.addAttribute(GAME_FIELD, gameField);
+        model.addAttribute("hello", "GAME");
+
         return "game";
     }
 
-    @RequestMapping(value = "/ajaxtest", method = RequestMethod.GET)
-    @ResponseBody
-    public Set<String> ajaxTest() {
-        Set<String> records = new HashSet<>();
-        records.add("Record #1");
-        records.add("Record #2");
-
-        return records;
+    @RequestMapping(value = "/game", method = RequestMethod.POST)
+    public @ResponseBody String makeMove(@RequestParam("key") String key, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        GameField gameField = (GameField) session.getAttribute(GAME_FIELD);
+        switch (key) {
+            case "37":
+                gameField.move(Direction.LEFT);
+                gameField.fillEmptyCell();
+                break;
+            case "38":
+                gameField.move(Direction.UP);
+                gameField.fillEmptyCell();
+                break;
+            case "39":
+                gameField.move(Direction.RIGHT);
+                gameField.fillEmptyCell();
+                break;
+            case "40":
+                gameField.move(Direction.DOWN);
+                gameField.fillEmptyCell();
+                break;
+        }
+        String field = "";
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                field += gameField.getCell(i,j).getValue() + " ";
+            }
+        }
+        return field + gameField.getScore();
     }
 
 }
