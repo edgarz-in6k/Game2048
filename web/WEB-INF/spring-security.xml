@@ -6,14 +6,18 @@
 
 
     <http auto-config="true">
-        <intercept-url pattern="/admin**" access="ROLE_USER" />
+        <intercept-url pattern="/admin**" access="hasRole('ROLE_USER')"/>
     </http>
 
     <authentication-manager>
         <authentication-provider>
+
             <user-service>
-                <user name="asd" password="asdasd" authorities="ROLE_USER" />
+                <user name="asd" password="asdasd" authorities="hasRole('ROLE_USER')" />
+                <user name="jimi" password="jimispassword" authorities="hasRole('ROLE_USER'), hasRole('ROLE_ADMIN')" />
+                <user name="bob" password="bobspassword" authorities="hasRole('ROLE_USER')" />
             </user-service>
+
         </authentication-provider>
     </authentication-manager>
 

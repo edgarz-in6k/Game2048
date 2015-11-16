@@ -7,25 +7,29 @@ import com.generator.RandomCellValueGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.Set;
 
 @Controller
 public class PageController {
 
     public static final String GAME_FIELD = "gameField";
+    public static final String KEY_LEFT = "37";
+    public static final String KEY_UP = "38";
+    public static final String KEY_RIGHT = "39";
+    public static final String KEY_DOWN = "40";
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String game(Model model, HttpServletRequest request){
 
         HttpSession session = request.getSession();
-
         GameField gameField = new GameField(new RandomCellValueFiller(new RandomCellValueGenerator()), 4);
+
         gameField.fillEmptyCell();
         gameField.fillEmptyCell();
+
         session.setAttribute(GAME_FIELD, gameField);
 
         model.addAttribute("hello", "INIT");
@@ -39,26 +43,7 @@ public class PageController {
         HttpSession session = request.getSession();
         GameField gameField = (GameField) session.getAttribute(GAME_FIELD);
 
-        System.out.println("!!!!!" + key);
-
-        switch (key) {
-            case "37":
-                gameField.move(Direction.LEFT);
-                gameField.fillEmptyCell();
-                break;
-            case "38":
-                gameField.move(Direction.UP);
-                gameField.fillEmptyCell();
-                break;
-            case "39":
-                gameField.move(Direction.RIGHT);
-                gameField.fillEmptyCell();
-                break;
-            case "40":
-                gameField.move(Direction.DOWN);
-                gameField.fillEmptyCell();
-                break;
-        }
+        movedField(key, gameField);
 
         model.addAttribute("hello", "GAME");
 
@@ -66,27 +51,15 @@ public class PageController {
     }
 
     @RequestMapping(value = "/game", method = RequestMethod.POST)
-    public @ResponseBody String makeMove(@RequestParam("key") String key, HttpServletRequest request) {
+    public @ResponseBody String makeMove(@RequestParam("key") String key, Model model, HttpServletRequest request) {
+
         HttpSession session = request.getSession();
         GameField gameField = (GameField) session.getAttribute(GAME_FIELD);
-        switch (key) {
-            case "37":
-                gameField.move(Direction.LEFT);
-                gameField.fillEmptyCell();
-                break;
-            case "38":
-                gameField.move(Direction.UP);
-                gameField.fillEmptyCell();
-                break;
-            case "39":
-                gameField.move(Direction.RIGHT);
-                gameField.fillEmptyCell();
-                break;
-            case "40":
-                gameField.move(Direction.DOWN);
-                gameField.fillEmptyCell();
-                break;
-        }
+
+        movedField(key, gameField);
+
+        model.addAttribute("hello", "AJAX");
+
         String field = "";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -94,6 +67,32 @@ public class PageController {
             }
         }
         return field + gameField.getScore();
+    }
+
+    public void movedField(String key, GameField gameField) {
+        switch (key) {
+            case KEY_LEFT: controllerField(gameField, Direction.LEFT); break;
+            case KEY_UP: controllerField(gameField, Direction.UP); break;
+            case KEY_RIGHT: controllerField(gameField, Direction.RIGHT); break;
+            case KEY_DOWN: controllerField(gameField, Direction.DOWN);  break;
+        }
+    }
+
+    public void controllerField(GameField gameField, Direction left) {
+        gameField.move(left);
+        gameField.fillEmptyCell();
+    }
+
+    @RequestMapping(value = "/admin**", method = RequestMethod.GET)
+    public ModelAndView adminPage() {
+
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security Hello World");
+        model.addObject("message", "This is protected page!");
+        model.setViewName("admin");
+
+        return model;
+
     }
 
 }
