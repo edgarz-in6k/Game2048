@@ -5,7 +5,8 @@
 </head>
 <body>
 <form method="post" action="/">
-  <input type="submit" value="Button">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <input type="submit" value="Button">
 </form>
 </body>
 </html>

@@ -4,10 +4,19 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
+    <beans:import resource="applicationContext.xml"/>
 
     <http auto-config="true" use-expressions="true">
-        <intercept-url pattern="/admin**" access="hasRole('ROLE_USER')"/>
-
+        <intercept-url pattern="/admin**" access="hasRole('ROLE_ADMIN')"/>
+        <form-login
+                login-page="/login"
+                default-target-url="/welcome"
+                authentication-failure-url="/login?error"
+                username-parameter="username"
+                password-parameter="password"
+                login-processing-url="/auth/login_check"
+                authentication-success-handler-ref="savedRequestAwareAuthenticationSuccessHandler"/>
+        <logout logout-success-url="/login?logout" logout-url="/j_spring_security_logout" delete-cookies="JSESSIONID"/>
         <!-- enable csrf protection -->
         <csrf/>
     </http>
