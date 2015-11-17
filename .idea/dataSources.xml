@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1079035354">
+  <component name="DataSourceManagerImpl" format="xml" hash="1771532512">
     <data-source source="LOCAL" name="MySQL - Game2048@localhost" uuid="51448ef0-8e5c-4197-b5c2-31d1aa746c5a">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>

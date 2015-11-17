@@ -55,7 +55,10 @@
         });
     </script>
 
-    <h3><a href="admin**">Admin</a></h3>
+    <form method="get" action="admin**">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <input type="submit" value="Registration">
+    </form>
 
 </body>
 </html>
