@@ -5,9 +5,9 @@
 <% GameField gameField = (GameField) session.getAttribute("gameField"); %>
 <html>
 <head>
-    <meta name="_csrf" content="${_csrf.token}"/>
+    <%--<meta name="_csrf" content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>--%>
     <title></title>
 </head>
 <body>
@@ -33,10 +33,16 @@
             var key = evt.which;
             if ([37, 38, 39, 40].indexOf(key) != -1){
                 var data = 'key=' + key;
+                var headers = {};
+                var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+                var csrfToken = $("meta[name='_csrf']").attr("content");
+                headers[csrfHeader] = csrfToken;
+
                 $.ajax({
                     url: "/game",
                     data: data,
                     type: "POST",
+                    headers: headers,
                     acync: true,
                     success: function (response) {
                         var values = response.split(" ");

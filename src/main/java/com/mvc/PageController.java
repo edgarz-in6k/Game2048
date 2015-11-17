@@ -22,6 +22,11 @@ public class PageController {
     public static final String KEY_DOWN = "40";
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String start(){
+        return "index";
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
     public String game(Model model, HttpServletRequest request){
 
         HttpSession session = request.getSession();
@@ -33,19 +38,6 @@ public class PageController {
         session.setAttribute(GAME_FIELD, gameField);
 
         model.addAttribute("hello", "INIT");
-
-        return "game";
-    }
-
-    @RequestMapping(value = "/{key}", method = RequestMethod.POST)
-    public String move(Model model, HttpServletRequest request, @PathVariable("key") String key){
-
-        HttpSession session = request.getSession();
-        GameField gameField = (GameField) session.getAttribute(GAME_FIELD);
-
-        movedField(key, gameField);
-
-        model.addAttribute("hello", "GAME");
 
         return "game";
     }
